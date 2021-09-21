@@ -6,8 +6,23 @@
 <use name="CondFormats/Luminosity"/>
 <use name="CoralBase"/>
 <use name="CondCore/DBOutputService"/>
-<use name="DataFormats/Luminosity"/>
+<use name="CalibTracker/SiPixelQuality"/>
 <use name="CondFormats/DataRecord"/>
+<use name="CondFormats/RunInfo"/>
+<use name="CondFormats/SiPixelObjects"/>
+<use name="DQM/SiPixelPhase1Common"/>
+<use name="DataFormats/Luminosity"/>"
+<use name="DataFormats/Common"/>
+<use name="DataFormats/DetId"/>
+<use name="DataFormats/SiPixelDetId"/>
+<use name="DataFormats/SiPixelDigi"/>
+<use name="DataFormats/TrackerCommon"/>
+<use name="FWCore/Utilities"/>
+<use name="FWCore/Concurrency"/>
+<use name="Geometry/CommonDetUnit" source_only="1"/>
+<use name="Geometry/Records"/>
+<use name="Geometry/TrackerGeometryBuilder"/>
+<use name="rootcling"/>
 <flags EDM_PLUGIN="1"/>
 <library file="AlcaPCCProducer.cc" name="AlcaPCCProducer">
   <flags EDM_PLUGIN="1"/>
@@ -26,5 +41,9 @@
 </library>
 
 <library file="AlcaPCCIntegrator.cc" name="AlcaPCCIntegrator">
+  <flags EDM_PLUGIN="1"/>
+</library>
+
+<library file="SiRocHitProducer.cc" name="SiRocHitProducer">
   <flags EDM_PLUGIN="1"/>
 </library>
