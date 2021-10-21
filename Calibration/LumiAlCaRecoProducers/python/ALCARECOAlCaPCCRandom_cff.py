@@ -19,10 +19,16 @@ siPixelClustersForLumiR = siPixelClustersPreSplitting.cpu.clone(
     src = "siPixelDigisForLumiR"
 )
 
-from Calibration.LumiAlCaRecoProducers.alcaPCCProducer_cfi import alcaPCCProducer
-alcaPCCProducerRandom = alcaPCCProducer.clone()
-alcaPCCProducerRandom.pixelClusterLabel = cms.InputTag("siPixelClustersForLumiR")
-alcaPCCProducerRandom.trigstring        = cms.untracked.string("alcaPCCRandom")
+from Calibration.LumiAlCaRecoProducers.alcaPCCEventProducer_cfi import alcaPCCEventProducer
+alcaPCCEventProducerRandom = alcaPCCEventProducer.clone()
+alcaPCCEventProducerRandom.pixelClusterLabel = cms.InputTag("siPixelClustersForLumiR")
+alcaPCCEventProducerRandom.trigstring        = cms.untracked.string("alcaPCCRandom")
+
+from Calibration.LumiAlCaRecoProducers.alcaPCCIntegrator_cfi import alcaPCCIntegrator
+alcaPCCProducerRandom = alcaPCCIntegrator.clone()
+alcaPCCProducerRandom.inputPccLabel = cms.string("alcaPCCEventProducerRandom")
+alcaPCCProducerRandom.trigstring    = cms.untracked.string("alcaPCCRandom")
+alcaPCCProducerRandom.ProdInst      = cms.string("alcaPCCRandom")
 
 # Sequence #
-seqALCARECOAlCaPCCRandom = cms.Sequence(ALCARECORandomHLT + siPixelDigisForLumiR + siPixelClustersForLumiR + alcaPCCProducerRandom)
+seqALCARECOAlCaPCCRandom = cms.Sequence(ALCARECORandomHLT + siPixelDigisForLumiR + siPixelClustersForLumiR + alcaPCCEventProducerRandom + alcaPCCProducerRandom)
