@@ -1,19 +1,10 @@
 import FWCore.ParameterSet.Config as cms
 
-import HLTrigger.HLTfilters.hltHighLevel_cfi
-ALCARECOZeroBiasFromRECOHLT = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
-    HLTPaths = cms.vstring("*ZeroBias*"),
-    eventSetupPathsKey='',
-    TriggerResultsTag = cms.InputTag("TriggerResults","","HLT"),
-    andOr = cms.bool(True), # choose logical OR between Triggerbits
-    throw = cms.bool(False) # tolerate triggers stated above, but not available
-)
-
-from Calibration.LumiAlCaRecoProducers.alcaPCCProducer_cfi import alcaPCCProducer
-alcaPCCProducerZBFromRECO = alcaPCCProducer.clone()
-alcaPCCProducerZBFromRECO.pixelClusterLabel = cms.InputTag("siPixelClusters")
-alcaPCCProducerZBFromRECO.trigstring        = cms.untracked.string("alcaPCCZeroBiasFromRECO")
-
+from Calibration.LumiAlCaRecoProducers.alcaPCCIntegrator_cfi import alcaPCCIntegrator
+alcaPCCProducerZBFromRECO = alcaPCCIntegrator.clone()
+alcaPCCProducerZBFromRECO.inputPccLabel = cms.InputTag("hltAlcaPixelClusterCounts") #HLT input tag
+alcaPCCProducerZBFromRECO.trigstring    = cms.untracked.string("alcaPCCEvent")
+alcaPCCProducerZBFromRECO.prodInst      = cms.untracked.string("alcaPCCZeroBiasFromRECO")
 
 # Sequence #
-seqALCARECOAlCaPCCZeroBiasFromRECO = cms.Sequence(ALCARECOZeroBiasFromRECOHLT + alcaPCCProducerZBFromRECO)
+seqALCARECOAlCaPCCZBFromRECO = cms.Sequence(alcaPCCProducerZBFromRECO)
