@@ -54,4 +54,8 @@
    <version ClassVersion="3" checksum="3776858548"/>
   </class>
   <class name="edm::Wrapper<reco::PixelClusterCountsInEvent>"/>
+  <class name="reco::SiRocHits" ClassVersion="6">
+   <version ClassVersion="6" checksum="2479631687"/>
+  </class>
+  <class name="edm::Wrapper<reco::SiRocHits>"/>  
 </lcgdict>
