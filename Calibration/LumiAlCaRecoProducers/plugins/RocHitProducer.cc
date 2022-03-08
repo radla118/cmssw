@@ -148,12 +148,11 @@ void RocHitProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
 
   if (hClusterColl.isValid()) {
     for (const auto& clusters : *hClusterColl) { /*loop over different clusters in a clusters vector (module)*/
-      std::map<int,int> RocAdc; // sum ADC counts for each ROC on the module
+      std::map<int,int> RocCounts; // sum ADC counts for each ROC on the module
       int detid = clusters.detId(); // ID of the module
       for (const auto& clu : clusters) {         /*loop over cluster in a given detId (module)*/
         int rowsperroc = fSensors_[detid].first;
         int colsperroc = fSensors_[detid].second;
-        //int nROCrows    = fSensorLayout_[detid].first; //not necessary
         int nROCcolumns = fSensorLayout_[detid].second;
 
         int roc(-1);
@@ -161,13 +160,11 @@ void RocHitProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
         if (fRocIds_.find(detid) != fRocIds_.end()) {
           rocIds_detid = fRocIds_[detid];
         }
-
-        /* A module is made with a few ROCs
-           Need to convert global row/column (on a module) to local row/column (on a ROC) */
-        const std::vector<SiPixelCluster::Pixel>& pixvector = clu.pixels();
-        for (unsigned int i = 0; i < pixvector.size(); ++i) {
-          int mr0 = pixvector[i].x; /* constant column direction is along x-axis */
-          int mc0 = pixvector[i].y; /* constant row direction is along y-axis */
+        
+        for (int i = 0; i < clu.size(); ++i) { /* pixels which have been hit */
+	  SiPixelCluster::Pixel pixel = clu.pixel(i);
+          int mr0 = pixel.x; /* constant column direction is along x-axis */
+          int mc0 = pixel.y; /* constant row direction is along y-axis */
 
           int irow = mr0 / rowsperroc;
           int icol = mc0 / colsperroc;
@@ -177,15 +174,13 @@ void RocHitProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
             roc = rocIds_detid[key];
           }
           if(roc > -1) {
-            RocAdc[roc] += pixvector[i].adc; /* summing up the ADC values for each ROC */
+            RocCounts[roc]++; /* summing up the hits values for each ROC */
           }
-          //std::cout << " detid " << detid << " roc " << roc << " key " << key << " adc " << pixvector[i].adc << std::endl;
         } /* loop over pixels in a cluster */
       } /* loop over cluster in a detId (module) */
-      for(unsigned int i = 0; i < RocAdc.size(); ++i){ //adds the collected ROC ADCs 
-        if(RocAdc[i] > fRocThreshold_) {
-          //std::cout << " after the sum detid " << detid << " roc " << i << " adc " << RocAdc[i] << std::endl;
-          fDet_->fillRocs(detid, i, RocAdc[i]);
+      for(unsigned int i = 0; i < RocCounts.size(); ++i){ //adds the collected ROC ADCs 
+        if(RocCounts[i] > fRocThreshold_) { 
+          fDet_->fillCounts(detid, i, RocCounts[i]);
         }
       }
     } /* loop over detId-grouped clusters in cluster detId-grouped clusters-vector */
