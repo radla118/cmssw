@@ -27,36 +27,8 @@ ________________________________________________________________**/
 #include "FWCore/Framework/interface/LuminosityBlock.h"
 #include "TMath.h"
 
-#include "DataFormats/DetId/interface/DetId.h"
-#include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/Framework/interface/ConsumesCollector.h"
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-//#include "FWCore/Framework/interface/one/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/Utilities/interface/EDGetToken.h"
-#include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/LuminosityBlock.h"
-#include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
-#include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
-
 #include "FWCore/Utilities/interface/ReusableObjectHolder.h"
 #include "FWCore/Concurrency/interface/SerialTaskQueue.h"
-
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
-#include "FWCore/Utilities/interface/ESGetToken.h"
-
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/stream/EDProducer.h"
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/ESWatcher.h"
-#include "FWCore/Framework/interface/ConsumesCollector.h"
-#include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/LuminosityBlock.h"
-#include "FWCore/Utilities/interface/Transition.h"
-#include "FWCore/Utilities/interface/ESGetToken.h"
 
 struct AlcaPCCIntegratorGlobalCache {
   mutable edm::EDPutTokenT<reco::PixelClusterCounts> lumiPutToken_;
@@ -104,9 +76,8 @@ public:
   void accumulate(const edm::Event& iEvent, const edm::EventSetup&);
   void endLuminosityBlockSummary(const edm::LuminosityBlock&, const edm::EventSetup&, std::vector<reco::PixelClusterCountsInEvent>* iCounts) const {
     for(unsigned int itr = 0; itr < thePCCob.size(); ++itr){
-      iCounts->push_back(thePCCob[itr]);
+      iCounts->push_back(thePCCob[itr]); 
     }
-    //thePCCob.clear();
   }
 
   static void globalEndLuminosityBlockSummary(edm::LuminosityBlock const&,
@@ -165,35 +136,4 @@ void AlcaPCCIntegrator::accumulate(const edm::Event& iEvent, const edm::EventSet
   //thePCCob->add(inputPcc);
   thePCCob.push_back(inputPcc);
 }
-/*
-void AlcaPCCIntegrator::endLuminosityBlockSummary(const edm::LuminosityBlock&, const edm::EventSetup&, std::vector<reco::PixelClusterCountsInEvent>* iCounts) {
-  //add the Stream's partial information to the full information
-  //iCounts->insert(thePCCob.begin(),thePCCob.end());
-  //iCounts->push_back(thePCCob);
-  for(unsigned int itr = 0; itr < thePCCob.size(); ++itr){
-    iCounts->push_back(thePCCob[itr]);
-  }
-  //thePCCob.clear();
-}
-
-void AlcaPCCIntegrator::globalEndLuminosityBlockSummary(edm::LuminosityBlock& iLumi, 
-                                            edm::EventSetup const&, 
-                                            LuminosityBlockContext const* iContext, 
-                                            std::vector<reco::PixelClusterCountsInEvent>* iCounts) {
-  //Nothing to do
-}
-
-void AlcaPCCIntegrator::globalEndLuminosityBlockProduce(edm::LuminosityBlock& iLumi, 
-                                           edm::EventSetup const&, 
-                                           LuminosityBlockContext const* iContext, 
-                                           std::vector<reco::PixelClusterCountsInEvent> const* iCounts) {
-  auto lumiPCC = std::make_unique<reco::PixelClusterCounts>();
-  for(unsigned int i = 0; i < iCounts->size(); ++i){
-    lumiPCC->add((*iCounts)[i]);
-  }	  
-  //Saving the PCC object
-  //iLumi.put(std::move(lumiPCC), std::string(prodInst_));
-  iLumi.put(lumiPCC);
-}
-*/
 DEFINE_FWK_MODULE(AlcaPCCIntegrator);
